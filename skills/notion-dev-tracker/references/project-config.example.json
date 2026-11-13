@@ -2,6 +2,7 @@
   "repository": "https://github.com/example/example-project",
   "epic_data_source_id": "<epic-data-source-uuid>",
   "backlog_data_source_id": "<backlog-data-source-uuid>",
+  "issue_data_source_id": "<issue-data-source-uuid>",
   "epic_page_id": "<epic-page-uuid>",
   "skill_version": "0.1.0-dev",
   "source_revision": "<distribution-commit-sha>",
@@ -24,6 +25,13 @@
       "approved": "Approved",
       "unapproved": "Unapproved",
       "unreferenced": "No reference"
+    },
+    "issue_status": {
+      "untriaged": "Untriaged",
+      "investigating": "Investigating",
+      "waiting": "Waiting",
+      "converted": "Converted",
+      "dismissed": "Dismissed"
     }
   }
 }
