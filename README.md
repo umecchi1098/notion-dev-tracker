@@ -1,58 +1,59 @@
 # Notion Dev Tracker
 
-Notionの共通DBで複数リポジトリの開発タスクとIssueをエージェントと管理するためのスキルです。案件ごとのタスク、依存関係、検証結果、次の操作を記録し、別のチャットから作業を再開できます。
+Codexと一緒に、開発タスクとIssueをNotionで管理するためのスキルです。リポジトリごとにProjectを選び、作業の計画から実装、検証、引き継ぎまでをタスクに記録します。
 
-現在は初版を開発中です。スキル、スキーマ、設定形式は変更されることがあります。
+## 導入手順
 
-## スキル
+1. 導入先のリポジトリをCodexで開き、Notionを接続します。Codexにはリポジトリの編集権限、Notionの接続には保存先の閲覧・編集権限が必要です。
+2. 次のプロンプトをコピーしてCodexに渡します。
+3. 保存先を聞かれたら、新しいDBを作る親ページ、または既存のDBのリンクを渡します。
+4. 返ってきたProjectリンクを開き、対象の案件と、作成または再利用されたDBを確認します。
 
-| 名前 | 役割 |
+```markdown
+このリポジトリにNotion Dev Trackerをセットアップしてください。
+
+配布元は https://github.com/umecchi1098/notion-dev-tracker です。公開mainの先端コミットSHAを一度取得し、そのSHAから次の3ディレクトリを配下のファイルごと取得してください。
+
+- skills/notion-dev-tracker/
+- skills/notion-dev-tracker-setup/
+- skills/notion-dev-tracker-migrate/
+
+導入先のGitルート、既存の指示、設定、タスクの管理元、手元の変更を確認してください。3スキルともバージョンが0.2.0-devであることを確認し、.agents/skills/ に同名で配置してください。各SKILL.mdの先頭のYAML frontmatterを含め、全ファイルを取得元の内容と照合してください。同じ内容は再利用し、ローカル編集がある場合はそのファイルを保持して差分を示してください。版や取得元を確認できない場合や差分が残る場合は、そこで止めてください。設定のsource_revisionには実際に取得した配布元のSHAを記録してください。
+
+配置した .agents/skills/notion-dev-tracker-setup/SKILL.md をこのセッションで読み、私のNotion接続で実行してください。保存先の指定が必要なら、新しいDBを作る親ページか既存DBのリンクを聞いてください。書込み検証を行うのは、私が専用のテスト保存先を指定した場合だけです。
+
+セットアップ後はnotion-dev-trackerを読み、このProjectの現状を確認してください。Projectリンク、作成・再利用したDB、配置ファイル、バージョン、取得元SHA、取得範囲と件数を示してください。確認できなかった項目があれば、その内容も教えてください。今回の依頼はセットアップと現状確認までです。
+```
+
+## Codexへの依頼例
+
+| やりたいこと | 依頼例 |
 | --- | --- |
-| [notion-dev-tracker](skills/notion-dev-tracker/SKILL.md) | タスクの作成、着手、報告、レビュー、受け入れ、再開、現状照会、Issueの登録・調査・タスク化 |
-| [notion-dev-tracker-setup](skills/notion-dev-tracker-setup/SKILL.md) | Notionの保存先の確認、DBと案件の準備、プロジェクト設定、スキルと`AGENTS.md`の配置 |
-| [notion-dev-tracker-migrate](skills/notion-dev-tracker-migrate/SKILL.md) | 既存のタスク管理を調査して移行案を提示し、ユーザーの同意後に移行 |
+| 次に着手する仕事を選ぶ | 「このProjectの未完了タスクと未処理Issueを確認して、次に進める候補を教えて」 |
+| Issueを調査する | 「このIssueを調査して結果を記録して。対応が必要なら既存タスクに関連付けるか、Plannedで登録して」 |
+| タスクを実装する | 「このタスクを本文の受け入れ条件に沿って実装・検証し、レビューに出して」 |
+| 複数のタスクを順番に進める | 「この3件を依存順に、このセッションで1件ずつ実装・検証して。各タスクはレビュー待ちで提出して」 |
 
-配布原本はこのリポジトリで管理します。案件・タスク・Issueの実データは、利用者が指定したNotionに保存します。
+実装を任せるときは、ReadyやApprovedのタスクから対象を指定し、依頼する作業を伝えてください。マージやデプロイ、データの削除を任せる場合は、その操作も明示してください。
 
-## 利用環境
+## Notionでの管理
 
-初版の対応対象はCodexです。対象リポジトリを編集でき、利用者のNotion接続で次の操作ができる環境を想定しています。
+複数のリポジトリで次の3つのDBを共有できます。
 
-- ページ、DB、データソースの取得
-- DBの作成とスキーマの確認・更新
-- リレーションの作成・確認
-- タスクとIssueの検索、ページ送り、作成・更新
+| DB | 記録する内容 |
+| --- | --- |
+| agent-project | リポジトリごとに1件のProject。案件の概要、担当者、状態、資料へのリンク |
+| agent-backlog | 個別に検証・受け入れができるタスク。進捗、優先順位、依存関係、引き継ぎ事項 |
+| agent-issue | 不具合、アイデア、改善案、質問と、その調査結果 |
 
-スキルは接続環境のツールを確認して使います。DBの保存先はセットアップ時に指定します。
+タスクやIssueはそれぞれ1件のProjectに属します。複数の案件で同じタスクIDを使っている場合は、ProjectとタスクIDを一緒に指定してください。Issueの更新には対象ページのリンクを使えます。
 
-## はじめ方
+## 既存タスクの取込み
 
-1. 対象リポジトリをCodexで開き、利用者のNotion接続を用意します。
-2. [導入プロンプト](prompts/setup.md)のコードブロックをコピーしてエージェントに渡します。
-3. 保存先を尋ねられたら、新規DBを作る親ページか既存DBのリンクを返します。
-4. セットアップ結果の案件リンクとタスク・未完了Issue件数を確認します。
+タスクをファイルで管理している場合は、Codexにそのファイルを示し、取込み案を依頼してください。対象、項目の対応、重複・競合、依存関係、件数を確認してから取り込みます。Notionを管理元に切り替える時期と元ファイルの扱いは、取込み結果を確認して決めてください。
 
-エージェントは配布元を特定のコミットに固定し、3スキルのディレクトリ全体を同じバージョンで`.agents/skills/`へ配置します。`notion-dev-tracker-setup`と`notion-dev-tracker-migrate`は同梱の`notion-dev-tracker`にあるスキーマと設定例を参照します。`references/`も含めて3ディレクトリをまとめて配置してください。
+## スキルと参照資料
 
-対象リポジトリには`.notion-dev-tracker.json`を作成し、接続先DBと案件の識別子を記録します。既存の`.project-tracker.json`がある場合は、セットアップで内容を確認して引き継ぎます。
-
-## 既存のタスクを移行する
-
-セットアップでタスク管理ファイルが見つかった場合は、移行スキルの実行を提案します。移行スキルは現在の管理方法とNotionのスキーマを調べ、対象範囲、項目の対応、既存データとの重複、タスク管理元の切替方法を提示します。ユーザーがその案に同意してから取り込みます。
-
-## スキーマと案件ごとの運用
-
-共通DBは1リポジトリを1案件として管理する`agent-epic`、実行タスクを管理する`agent-backlog`、不具合・アイデア・改善・質問を管理する`agent-issue`の3つです。Issueは必ず1件のepicに属し、具体化したタスクと関連付けます。列名は小文字のスネークケースを使います。
-
-- [DBスキーマ](skills/notion-dev-tracker/references/schema.md)
-- [プロジェクト設定例](skills/notion-dev-tracker/references/project-config.example.json)
-
-新規DBの状態名は英語を既定とします。既存DBの日本語などの状態名は`status_values`の対応付けで利用します。必要な実行環境、統合先ブランチ、検証、受け入れの条件は対象リポジトリの指示に従います。
-
-「現状を教えて」では対象案件の全タスクと未完了Issueを確認し、進行・待ち・次の操作と関係・影響を案内します。現状照会だけでは調査や更新を始めません。Issueの調査を明示的に依頼すると、調査結果を記録し、具体化したタスクをplannedで作成するか既存タスクを再利用してIssueと関連付けます。実装は別途指示します。
-
-Issue未設定の既存設定でもタスク操作を続けられます。その場合の現状照会ではIssueを未設定・未確認と示し、0件とは扱いません。Issueを追加・接続するにはセットアップを依頼してください。既存DBと日本語の状態名・種別は再利用します。
-
-## 検証状況
-
-現時点の検証範囲はファイル構成・参照・設定の静的チェックと、読み取り専用の模擬ケースです。実際のNotion DBでセットアップからタスク移行まで行う検証は今後の確認対象です。
+- [通常運用](skills/notion-dev-tracker/SKILL.md) · [セットアップ・再セットアップ](skills/notion-dev-tracker-setup/SKILL.md) · [既存タスクの取込み](skills/notion-dev-tracker-migrate/SKILL.md)
+- [DBの項目と状態](skills/notion-dev-tracker/references/schema.md) · [リポジトリの設定例](skills/notion-dev-tracker/references/project-config.example.json)
+- [着手条件と状態遷移](skills/notion-dev-tracker/references/workflow.md) · [タスク本文と引き継ぎ](skills/notion-dev-tracker/references/task-template.md) · [Issueの調査とタスク化](skills/notion-dev-tracker/references/issues.md)

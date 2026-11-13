@@ -1,10 +1,10 @@
 # Notion開発タスクDBの契約
 
-列名は小文字の snake_case を使う。各DBの実際のデータソースIDと案件のepicページIDは、導入先リポジトリの `.notion-dev-tracker.json` で解決する。
+列名は小文字の snake_case を使う。各DBの実際のデータソースIDとProjectページIDは、導入先リポジトリの `.notion-dev-tracker.json` で解決する。共通3DBを複数リポジトリで共有し、1リポジトリにつき1件のProjectを置く。
 
-スキル内の状態名は意味を表すキー。Notionに保存するときは、設定の `status_values.task_status`、`status_values.epic_status`、`status_values.approval_status`、`status_values.issue_status` を参照する。新規DBでは以下の英語値を初期値にする。既存DBでは状態名を実際の選択肢に対応付ける。
+スキル内の状態名は意味を表すキー。Notionに保存するときは、設定の `status_values.task_status`、`status_values.project_status`、`status_values.approval_status`、`status_values.issue_status` を参照する。新規DBでは以下の英語値を初期値にする。互換性のある既存DBでは状態名を実際の選択肢に対応付ける。
 
-## agent-epic
+## agent-project
 
 1レコードを1リポジトリの開発案件として扱う。
 
@@ -15,22 +15,24 @@
 | summary | rich_text | 案件の概要 |
 | status | status | 案件全体の状態 |
 | owner | people | 案件担当者 |
-| tasks | relation | agent-backlog.epic の逆参照 |
-| issues | relation | agent-issue.epic の逆参照 |
+| tasks | relation | agent-backlog.project の逆参照 |
+| issues | relation | agent-issue.project の逆参照 |
+
+ownerを人間側の既定責任者とする。個別タスクの担当・受け入れ担当が異なる場合はタスク本文に記録する。全タスクがDoneでもProjectの状態は自動変更しない。概要や共有する仕様ページへの入口をProjectに置く。
 
 ## agent-backlog
 
-1レコードを1タスクとして扱う。`epic` を1件指定し、`epic` と `task_id` の組み合わせで特定する。一意性と案件数はスキルが検査する。
+1レコードを独立して受け入れられる1タスクとして扱う。`project` を必ず1件指定し、`project` と `task_id` の組み合わせで特定する。一意性と所属数はスキルが検査する。別Projectの同じtask_idを更新しない。
 
 | 列名 | Notion型 | 用途 |
 | --- | --- | --- |
 | name | title | 作業名 |
 | task_id | rich_text | 案件内で一意の識別子 |
-| epic | relation | agent-epic。逆参照は tasks |
+| project | relation | agent-project。逆参照は tasks |
 | status | status | タスクの進行状態 |
 | priority | number | 小さい数値を優先。空欄は後に扱う |
 | execution_os | select | 作業するOS。新規候補は windows、macos、linux |
-| agent_thread | rich_text | 担当チャットの識別子 |
+| agent_thread | rich_text | 現在または直近の担当セッションへの参照。稼働監視・ロックではない |
 | branch | rich_text | 作業ブランチ |
 | milestone | rich_text | マイルストーン |
 | approval_status | select | 承認根拠の確認状況 |
@@ -44,17 +46,19 @@
 | accepted_at | date | 受け入れを確認した日時 |
 | issues | relation | agent-issue.tasks の逆参照。タスクはIssueなしでも作成できる |
 
-目的、編集範囲、承認根拠、完了条件、検証結果、移行元とその対応付けはタスク本文に残す。任意項目で根拠が得られない値は空欄にする。`agent_thread` に人の名前を転記するなど、意味の異なる値を流用しない。
+一覧の絞り込み・操作に使う情報を列に置き、目的、範囲、許可の根拠、判断、検証の詳細、移行元との対応は [タスク本文](task-template.md) に残す。列と本文を矛盾させず、未知の値は推測しない。`agent_thread` に人の名前を入れない。細かな実装手順は本文で扱い、機能階層・必須サブタスク・実行履歴専用DB、run_id・ロック・heartbeat・委任モード等の列は追加しない。
+
+依存先は実際のページIDと所属Projectを確認する。dependencies側を更新し、逆参照dependentsを同じ関係として扱う。既存の経路もたどり、自己参照・循環を拒否する。別案件の名前から依存先を推測しない。
 
 ## agent-issue
 
-1レコードを1件のアイデア、不具合、改善提案、質問として扱う。`epic` を1件指定し、実際のページIDで特定する。`issue_id` は共通DB内の自動採番IDで、会話からページを探すために使う。案件数と、tasksに関連付けるタスクが同じepicに属することはスキルが検査する。
+1レコードを1件のアイデア、不具合、改善提案、質問として扱う。`project` を必ず1件指定し、そのProjectを確認した実際のページIDで更新する。`issue_id` は共通DB内の自動採番IDで、会話からページを探すために使う。所属数と、tasksに関連付けるタスクが同じProjectに属することはスキルが検査する。
 
 | 列名 | Notion型 | 用途 |
 | --- | --- | --- |
 | name | title | 気づきや困りごとの件名 |
 | issue_id | unique_id | Notionが自動採番する識別子 |
-| epic | relation | agent-epic。逆参照は issues |
+| project | relation | agent-project。逆参照は issues |
 | type | select | 新規候補は bug、idea、improvement、question |
 | status | status | 受付と調査の状態 |
 | tasks | relation | 関連する既存タスクや調査から作成したagent-backlog。逆参照は issues |
@@ -75,10 +79,10 @@
 | task_status | blocked | Blocked | in_progress | 中断 |
 | task_status | review | In review | in_progress | レビュー待ち |
 | task_status | done | Done | complete | 完了 |
-| epic_status | backlog | Backlog | to_do | — |
-| epic_status | active | Active | in_progress | — |
-| epic_status | on_hold | On hold | in_progress | — |
-| epic_status | done | Done | complete | — |
+| project_status | backlog | Backlog | to_do | — |
+| project_status | active | Active | in_progress | — |
+| project_status | on_hold | On hold | in_progress | — |
+| project_status | done | Done | complete | — |
 | approval_status | approved | Approved | — | 承認済み |
 | approval_status | unapproved | Unapproved | — | 未承認 |
 | approval_status | unreferenced | No reference | — | 参照なし |
@@ -88,27 +92,22 @@
 | issue_status | converted | Converted | complete | タスク化済み |
 | issue_status | dismissed | Dismissed | complete | 見送り |
 
-新規DBの既定状態はタスクが `planned`、案件が `backlog`、Issueが `untriaged`。Issueの未完了は `untriaged`・`investigating`・`waiting`、受付処理済みは `converted`・`dismissed` とする。既存の状態名と意味が一意に対応すればその値を保存する。対応が曖昧なら利用者に確認する。既存の列型、選択肢、リレーション先を変更する必要がある場合は差分を示し、その変更の同意を得る。
+新規DBの既定状態はタスクが `planned`、案件が `backlog`、Issueが `untriaged`。Issueの未完了は `untriaged`・`investigating`・`waiting`、受付処理済みは `converted`・`dismissed` とする。既存の状態名と意味が一意に対応すればその値を保存する。対応が曖昧なら利用者に確認する。Status型のグループも照合し、Select型で代用しない。既存DBの列名・型・リレーション先がこの契約と非互換なら、通常運用・Setupで変更や初期化を試みず停止する。
 
 `execution_os` は案件で実際に使う値を保存する。既存DBに必要な値がなければ、追加する選択肢を示して対応する。
 
 `approval_status` は記録上の確認状況。作業の実行許可や受け入れは利用者の依頼とリポジトリの規約から確認する。
 
-## リレーションの作成順
-
-1. agent-epic、agent-backlog、agent-issueをtitle列と非リレーション列とともに作り、実際のデータソースIDを取得する。既存DBは再利用する。
-2. agent-backlog.epic から agent-epic への双方向リレーションを作り、逆名を tasks にする。
-3. agent-backlog.dependencies から同一DBへの双方向リレーションを作り、逆名を dependents にする。
-4. agent-issue.epic から agent-epic への双方向リレーションを作り、逆名を issues にする。
-5. agent-issue.tasks から agent-backlog への双方向リレーションを作り、逆名を issues にする。
-6. 3つのDBを再取得し、型、状態のグループ、参照先と逆列を確認する。
-
-接続先ツールが返す実際のAPI形式に合わせる。双方向リレーションの逆列は同じ関係の一部として扱う。Status型とSelect型を区別し、必要な型や参照先を作れない場合は完了した段階と不足する機能を報告する。
-
 ## 案件の設定
 
-[設定例](project-config.example.json) のプレースホルダーを、導入時に解決した値へ置き換える。`source_revision` には配布元で実際に取得したコミットSHAを保存する。認証は利用者のNotion接続を使用する。
+[設定例](project-config.example.json) のプレースホルダーを、導入時に解決した値へ置き換える。配布版は `0.2.0-dev`。repository、project_data_source_id、backlog_data_source_id、project_page_id、status_valuesのtask_status・project_status・approval_status、skill_version、source_revisionを必須とする。IDは実データソース・ページと照合し、DB IDと混同しない。repositoryはremoteとProjectの保存値をWeb URLに正規化して比較する。
 
-`issue_data_source_id` はagent-issueのデータソースUUIDを保存する。Issue未対応の既存設定ではこの項目と `status_values.issue_status` がなくてもタスク操作は利用できる。現状照会ではIssueが未確認であることを明示し、Issue対応を追加するセットアップで実DBと状態マップを補う。配布用の設定例に特定の利用者や案件のNotion IDを埋め込まない。
+`source_revision` は導入時に実際に取得した配布元の完全なコミットSHA。導入先のHEADや未コミット差分を含まない旧HEADで代用しない。3スキルとreferencesを同じコミットから配置し、skill_versionを揃える。認証は利用者のNotion接続で行い、配布用の設定例には実案件のNotion ID、認証情報、利用者情報を埋め込まない。
 
-旧 `.project-tracker.json` のID等は接続先を実際に取得し、対象リポジトリと一致することを確認して引き継ぐ。状態マップがない場合は実スキーマから補う。
+`issue_data_source_id` はagent-issueのデータソースUUID。新形式の必須タスク設定が有効で、IssueのIDまたは `status_values.issue_status` が未設定なら、タスク操作を続けてよい。この場合はProject・Backlogのタスクに必要な列・関係を検証し、Issue専用の列・関係は未確認とする。未作成のIssue連携列だけを理由にタスク操作を止めない。Issueは「未設定・未確認」と報告し、0件と扱わない。設定済みの接続の取得失敗も未確認とする。Issue追加を依頼されたSetupで、新形式の実DB・状態マップを照合して補う。新規導入では3DBを準備する。
+
+## 拒否する形式
+
+対象設定または選択した接続先の一式にある旧 `agent-epic`、`epic` 関係、`epic_data_source_id`、`epic_page_id`、`status_values.epic_status` は未対応として拒否し、停止する。新旧キーの混在も拒否する。新キーへの自動読み替え、列の自動改称、エイリアスによる旧形式運用は行わない。保存先に同居する対象外の旧DBは選択・変更せず除外し、有効な新形式の一式は利用できる。
+
+旧 `.project-tracker.json` からの自動引継ぎ、旧スキル名の探索による自動アップグレードは行わない。旧設定・旧スキーマしかない場合は不足と不整合を示して停止し、自動修復・リセット・データ削除を行わない。この配布物は既存導入先の切替手順を提供しない。

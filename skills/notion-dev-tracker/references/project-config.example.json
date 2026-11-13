@@ -1,10 +1,10 @@
 {
   "repository": "https://github.com/example/example-project",
-  "epic_data_source_id": "<epic-data-source-uuid>",
+  "project_data_source_id": "<project-data-source-uuid>",
   "backlog_data_source_id": "<backlog-data-source-uuid>",
   "issue_data_source_id": "<issue-data-source-uuid>",
-  "epic_page_id": "<epic-page-uuid>",
-  "skill_version": "0.1.0-dev",
+  "project_page_id": "<project-page-uuid>",
+  "skill_version": "0.2.0-dev",
   "source_revision": "<distribution-commit-sha>",
   "status_values": {
     "task_status": {
@@ -15,7 +15,7 @@
       "review": "In review",
       "done": "Done"
     },
-    "epic_status": {
+    "project_status": {
       "backlog": "Backlog",
       "active": "Active",
       "on_hold": "On hold",
