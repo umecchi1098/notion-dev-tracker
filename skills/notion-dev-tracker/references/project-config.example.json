@@ -5,7 +5,6 @@
   "issue_data_source_id": "<issue-data-source-uuid>",
   "project_page_id": "<project-page-uuid>",
   "skill_version": "0.2.0-dev",
-  "source_revision": "<distribution-commit-sha>",
   "status_values": {
     "task_status": {
       "planned": "Planned",

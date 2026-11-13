@@ -12,17 +12,31 @@ Codexと一緒に、開発タスクとIssueをNotionで管理するためのス�
 ```markdown
 このリポジトリにNotion Dev Trackerをセットアップしてください。
 
-配布元は https://github.com/umecchi1098/notion-dev-tracker です。公開mainの先端コミットSHAを一度取得し、そのSHAから次の3ディレクトリを配下のファイルごと取得してください。
+配布元は https://github.com/umecchi1098/notion-dev-tracker です。mainから次の3ディレクトリを配下のファイルごとまとめて取得してください。
 
 - skills/notion-dev-tracker/
 - skills/notion-dev-tracker-setup/
 - skills/notion-dev-tracker-migrate/
 
-導入先のGitルート、既存の指示、設定、タスクの管理元、手元の変更を確認してください。3スキルともバージョンが0.2.0-devであることを確認し、.agents/skills/ に同名で配置してください。各SKILL.mdの先頭のYAML frontmatterを含め、全ファイルを取得元の内容と照合してください。同じ内容は再利用し、ローカル編集がある場合はそのファイルを保持して差分を示してください。版や取得元を確認できない場合や差分が残る場合は、そこで止めてください。設定のsource_revisionには実際に取得した配布元のSHAを記録してください。
+導入先の指示と手元の変更を確認し、3スキルを .agents/skills/ に同名で配置してください。既存の編集を上書きする場合は、先に差分を示して確認してください。
 
 配置した .agents/skills/notion-dev-tracker-setup/SKILL.md をこのセッションで読み、私のNotion接続で実行してください。保存先の指定が必要なら、新しいDBを作る親ページか既存DBのリンクを聞いてください。書込み検証を行うのは、私が専用のテスト保存先を指定した場合だけです。
 
-セットアップ後はnotion-dev-trackerを読み、このProjectの現状を確認してください。Projectリンク、作成・再利用したDB、配置ファイル、バージョン、取得元SHA、取得範囲と件数を示してください。確認できなかった項目があれば、その内容も教えてください。今回の依頼はセットアップと現状確認までです。
+セットアップ後はnotion-dev-trackerを読み、このProjectの現状を確認してください。Projectリンク、作成・再利用したDB、配置ファイル、バージョン、取得範囲と件数を示してください。確認できなかった項目があれば、その内容も教えてください。今回の依頼はセットアップと現状確認までです。
+```
+
+## 更新手順
+
+導入済みのリポジトリをCodexで開き、次のプロンプトを渡します。
+
+```markdown
+このリポジトリのNotion Dev Trackerを更新してください。
+
+https://github.com/umecchi1098/notion-dev-tracker のmainから、skills/ 配下の notion-dev-tracker、notion-dev-tracker-setup、notion-dev-tracker-migrate をまとめて取得してください。
+
+配下のファイルも含めて .agents/skills/ の同名ディレクトリと比べ、差分を反映してください。手元の編集を上書き・削除する可能性があれば、その箇所を先に確認してください。
+
+配置した notion-dev-tracker の metadata.version を .notion-dev-tracker.json の skill_version に記録してください。ファイルと設定がすでに一致していれば「更新不要」と伝えてください。設定項目やDBの構成に変更がある場合だけ、更新版のSetup手順に従って既存の接続先で再セットアップしてください。
 ```
 
 ## Codexへの依頼例

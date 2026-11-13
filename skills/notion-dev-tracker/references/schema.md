@@ -100,9 +100,9 @@ ownerを人間側の既定責任者とする。個別タスクの担当・受け
 
 ## 案件の設定
 
-[設定例](project-config.example.json) のプレースホルダーを、導入時に解決した値へ置き換える。配布版は `0.2.0-dev`。repository、project_data_source_id、backlog_data_source_id、project_page_id、status_valuesのtask_status・project_status・approval_status、skill_version、source_revisionを必須とする。IDは実データソース・ページと照合し、DB IDと混同しない。repositoryはremoteとProjectの保存値をWeb URLに正規化して比較する。
+[設定例](project-config.example.json) のプレースホルダーを、導入時に解決した値へ置き換える。repository、project_data_source_id、backlog_data_source_id、project_page_id、status_valuesのtask_status・project_status・approval_status、skill_versionを必須とする。IDは実データソース・ページと照合し、DB IDと混同しない。repositoryはremoteとProjectの保存値をWeb URLに正規化して比較する。
 
-`source_revision` は導入時に実際に取得した配布元の完全なコミットSHA。導入先のHEADや未コミット差分を含まない旧HEADで代用しない。3スキルとreferencesを同じコミットから配置し、skill_versionを揃える。認証は利用者のNotion接続で行い、配布用の設定例には実案件のNotion ID、認証情報、利用者情報を埋め込まない。
+skill_versionには配置したnotion-dev-trackerの `metadata.version` を記録する。認証は利用者のNotion接続で行い、配布用の設定例には実案件のNotion ID、認証情報、利用者情報を埋め込まない。
 
 `issue_data_source_id` はagent-issueのデータソースUUID。新形式の必須タスク設定が有効で、IssueのIDまたは `status_values.issue_status` が未設定なら、タスク操作を続けてよい。この場合はProject・Backlogのタスクに必要な列・関係を検証し、Issue専用の列・関係は未確認とする。未作成のIssue連携列だけを理由にタスク操作を止めない。Issueは「未設定・未確認」と報告し、0件と扱わない。設定済みの接続の取得失敗も未確認とする。Issue追加を依頼されたSetupで、新形式の実DB・状態マップを照合して補う。新規導入では3DBを準備する。
 
