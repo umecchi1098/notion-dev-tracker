@@ -1,0 +1,29 @@
+{
+  "repository": "https://github.com/example/example-project",
+  "epic_data_source_id": "<epic-data-source-uuid>",
+  "backlog_data_source_id": "<backlog-data-source-uuid>",
+  "epic_page_id": "<epic-page-uuid>",
+  "skill_version": "0.1.0-dev",
+  "source_revision": "<distribution-commit-sha>",
+  "status_values": {
+    "task_status": {
+      "planned": "Planned",
+      "ready": "Ready",
+      "in_progress": "In progress",
+      "blocked": "Blocked",
+      "review": "In review",
+      "done": "Done"
+    },
+    "epic_status": {
+      "backlog": "Backlog",
+      "active": "Active",
+      "on_hold": "On hold",
+      "done": "Done"
+    },
+    "approval_status": {
+      "approved": "Approved",
+      "unapproved": "Unapproved",
+      "unreferenced": "No reference"
+    }
+  }
+}
