@@ -2,7 +2,7 @@
 name: notion-dev-tracker
 description: リポジトリの現状や次の候補を案内し、Notionの開発タスク・Issueを運用するときに使う。合意したタスクの実装・再開や、明示された範囲の順次実行も扱う。
 metadata:
-  version: "0.2.0-dev"
+  version: "0.3.0-dev"
 ---
 # notion-dev-tracker
 

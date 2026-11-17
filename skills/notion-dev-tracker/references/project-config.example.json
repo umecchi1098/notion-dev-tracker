@@ -4,7 +4,7 @@
   "backlog_data_source_id": "<backlog-data-source-uuid>",
   "issue_data_source_id": "<issue-data-source-uuid>",
   "project_page_id": "<project-page-uuid>",
-  "skill_version": "0.2.0-dev",
+  "skill_version": "0.3.0-dev",
   "status_values": {
     "task_status": {
       "planned": "Planned",

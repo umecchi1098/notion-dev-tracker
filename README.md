@@ -1,45 +1,34 @@
 # Notion Dev Tracker
 
-Codexと一緒に、開発タスクとIssueをNotionで管理するためのスキルです。リポジトリごとにProjectを選び、作業の計画から実装、検証、引き継ぎまでをタスクに記録します。
+Codex と Claude Code で、開発タスクと Issue を Notion 上で管理するためのスキルです。両方を使う案件では、同じ開発ルールと Notion Project を共有し、タスクの続きから作業できます。
 
-## 導入手順
+## 新規導入
 
-1. 導入先のリポジトリをCodexで開き、Notionを接続します。Codexにはリポジトリの編集権限、Notionの接続には保存先の閲覧・編集権限が必要です。
-2. 次のプロンプトをコピーしてCodexに渡します。
-3. 保存先を聞かれたら、新しいDBを作る親ページ、または既存のDBのリンクを渡します。
-4. 返ってきたProjectリンクを開き、対象の案件と、作成または再利用されたDBを確認します。
+対象リポジトリを Codex または Claude Code で開き、次の依頼を渡してください。使用するエージェントにはリポジトリの編集権限と、保存先にアクセスできる Notion 接続が必要です。保存先を聞かれたら、親ページか既存 DB のリンクを渡してください。
 
 ```markdown
-このリポジトリにNotion Dev Trackerをセットアップしてください。
+このリポジトリに Notion Dev Tracker を導入してください。
+https://github.com/umecchi1098/notion-dev-tracker の main の同じコミットから、skills/ 内の notion-dev-tracker、notion-dev-tracker-setup、notion-dev-tracker-migrate を参照資料ごと取得してください。
 
-配布元は https://github.com/umecchi1098/notion-dev-tracker です。mainから次の3ディレクトリを配下のファイルごとまとめて取得してください。
+現在使っているエージェントに3スキルを配置してください（Codex は .agents/skills/、Claude Code は .claude/skills/）。もう一方も使っていて未導入なら、そちらにも入れるか相談してください。両方に導入するときは同じ配布物を使い、手元の編集と競合する場合は配置前に差分を見せてください。
 
-- skills/notion-dev-tracker/
-- skills/notion-dev-tracker-setup/
-- skills/notion-dev-tracker-migrate/
-
-導入先の指示と手元の変更を確認し、3スキルを .agents/skills/ に同名で配置してください。既存の編集を上書きする場合は、先に差分を示して確認してください。
-
-配置した .agents/skills/notion-dev-tracker-setup/SKILL.md をこのセッションで読み、私のNotion接続で実行してください。保存先の指定が必要なら、新しいDBを作る親ページか既存DBのリンクを聞いてください。書込み検証を行うのは、私が専用のテスト保存先を指定した場合だけです。
-
-セットアップ後はnotion-dev-trackerを読み、このProjectの現状を確認してください。Projectリンク、作成・再利用したDB、配置ファイル、バージョン、取得範囲と件数を示してください。確認できなかった項目があれば、その内容も教えてください。今回の依頼はセットアップと現状確認までです。
+配置した notion-dev-tracker-setup/SKILL.md をこのセッションで読み、開発ルールと Notion の接続先を設定してください。動作確認のための書き込みは、私が指定した専用のテスト保存先でだけ行ってください。最後に通常スキルで現状を確認し、Project リンク、作成・再利用した DB、配置先と版、取得範囲と件数、未確認事項を教えてください。
 ```
 
-## 更新手順
+## 更新
 
-導入済みのリポジトリをCodexで開き、次のプロンプトを渡します。
+導入済みのリポジトリで、Codex または Claude Code に次の依頼を渡してください。
 
 ```markdown
-このリポジトリのNotion Dev Trackerを更新してください。
+このリポジトリの Notion Dev Tracker を更新してください。
+https://github.com/umecchi1098/notion-dev-tracker の main の同じコミットから、skills/ 内の notion-dev-tracker、notion-dev-tracker-setup、notion-dev-tracker-migrate を参照資料ごと取得してください。
 
-https://github.com/umecchi1098/notion-dev-tracker のmainから、skills/ 配下の notion-dev-tracker、notion-dev-tracker-setup、notion-dev-tracker-migrate をまとめて取得してください。
+Codex の .agents/skills/ と Claude Code の .claude/skills/ を確認し、導入済みの3スキルを更新してください。片側だけ導入済みで、未導入のエージェントも使っている場合は、そちらにも入れるか相談してください。対象の配置先ごとに差分を確認し、手元の編集を上書き・削除する場合は先に見せてください。すべての対象で配布物との一致を確認してから、通常スキルの metadata.version を .notion-dev-tracker.json の skill_version に記録してください。
 
-配下のファイルも含めて .agents/skills/ の同名ディレクトリと比べ、差分を反映してください。手元の編集を上書き・削除する可能性があれば、その箇所を先に確認してください。
-
-配置した notion-dev-tracker の metadata.version を .notion-dev-tracker.json の skill_version に記録してください。ファイルと設定がすでに一致していれば「更新不要」と伝えてください。設定項目やDBの構成に変更がある場合だけ、更新版のSetup手順に従って既存の接続先で再セットアップしてください。
+更新版の Setup に従って開発ルールを共有してください。エージェントを追加するだけなら、既存設定の Project と DB を読み取りで照合してください。設定や DB 構成の更新が必要な場合は、Setup の該当手順を既存の接続先に適用してください。既存 Backlog に implementation_agent 列がなければ追加するか相談してください。配置・ルール・設定に差分がなく、追加する項目もなければ「更新不要」と伝えてください。
 ```
 
-## Codexへの依頼例
+## エージェントへの依頼例
 
 | やりたいこと | 依頼例 |
 | --- | --- |
@@ -60,11 +49,13 @@ https://github.com/umecchi1098/notion-dev-tracker のmainから、skills/ 配下
 | agent-backlog | 個別に検証・受け入れができるタスク。進捗、優先順位、依存関係、引き継ぎ事項 |
 | agent-issue | 不具合、アイデア、改善案、質問と、その調査結果 |
 
+Backlog の `implementation_agent`（複数選択）には、実装変更を報告したエージェントを記録します。Codex が実装し Claude Code がレビューした場合は `Codex`、Claude Code も修正した場合は両方が残ります。
+
 タスクやIssueはそれぞれ1件のProjectに属します。複数の案件で同じタスクIDを使っている場合は、ProjectとタスクIDを一緒に指定してください。Issueの更新には対象ページのリンクを使えます。
 
 ## 既存タスクの取込み
 
-タスクをファイルで管理している場合は、Codexにそのファイルを示し、取込み案を依頼してください。対象、項目の対応、重複・競合、依存関係、件数を確認してから取り込みます。Notionを管理元に切り替える時期と元ファイルの扱いは、取込み結果を確認して決めてください。
+タスクをファイルで管理している場合は、エージェントにそのファイルを示し、取込み案を依頼してください。対象、項目の対応、重複・競合、依存関係、件数を確認してから取り込みます。Notionを管理元に切り替える時期と元ファイルの扱いは、取込み結果を確認して決めてください。
 
 ## スキルと参照資料
 

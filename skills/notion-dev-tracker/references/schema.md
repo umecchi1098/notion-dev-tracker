@@ -32,6 +32,7 @@ ownerを人間側の既定責任者とする。個別タスクの担当・受け
 | status | status | タスクの進行状態 |
 | priority | number | 小さい数値を優先。空欄は後に扱う |
 | execution_os | select | 作業するOS。新規候補は windows、macos、linux |
+| implementation_agent | multi_select | 実装に参加したエージェント。選択肢は `Codex` と `Claude Code` |
 | agent_thread | rich_text | 現在または直近の担当セッションへの参照。稼働監視・ロックではない |
 | branch | rich_text | 作業ブランチ |
 | milestone | rich_text | マイルストーン |
@@ -47,6 +48,8 @@ ownerを人間側の既定責任者とする。個別タスクの担当・受け
 | issues | relation | agent-issue.tasks の逆参照。タスクはIssueなしでも作成できる |
 
 一覧の絞り込み・操作に使う情報を列に置き、目的、範囲、許可の根拠、判断、検証の詳細、移行元との対応は [タスク本文](task-template.md) に残す。列と本文を矛盾させず、未知の値は推測しない。`agent_thread` に人の名前を入れない。細かな実装手順は本文で扱い、機能階層・必須サブタスク・実行履歴専用DB、run_id・ロック・heartbeat・委任モード等の列は追加しない。
+
+新規Backlogには `implementation_agent` を作る。既存の新形式Backlogでは、この列が未追加でも他の条件を満たす操作を続けられる。通常の更新時に列の追加を案内し、追加前の実装報告ではタスク本文に実装したエージェント名を残す。列を追加した時点で過去タスクの値は空欄とする。
 
 依存先は実際のページIDと所属Projectを確認する。dependencies側を更新し、逆参照dependentsを同じ関係として扱う。既存の経路もたどり、自己参照・循環を拒否する。別案件の名前から依存先を推測しない。
 
